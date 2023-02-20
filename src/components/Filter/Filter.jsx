@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { setFilter } from 'redux/filterSlice';
+import { DebounceInput } from 'react-debounce-input';
 
+import { setFilter } from 'redux/filterSlice';
 import { getFilter } from 'redux/selectors';
 import css from './Filter.module.css';
 
@@ -10,15 +11,17 @@ const Filter = () => {
     const valueFilter = payload => {
         dispatch(setFilter(payload));
     };
-
+    console.log(filter);
     const changeFilter = e => {
-        valueFilter(e.currentTarget.value);
+        valueFilter(e.target.value);
     };
 
     return (
         <label className={css.filterLabel}>
             Find contacts by name
-            <input
+            <DebounceInput
+                minLength={1}
+                debounceTimeout={300}
                 className={css.filterInput}
                 type="text"
                 value={filter}

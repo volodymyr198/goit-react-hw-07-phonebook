@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { RotatingLines } from 'react-loader-spinner';
 import {
     useAddContactMutation,
     useFetchContactsQuery,
@@ -10,16 +11,17 @@ import {
 import css from './FormPhonebook.module.css';
 
 const FormPhonebook = () => {
-    const notify = () => toast.info('Contact added!');
-    const [addContact] = useAddContactMutation();
-    const { data: contacts, isLoading } = useFetchContactsQuery();
+    const notifyAdd = () => toast.success('Contact added!');
+
+    const [addContact, { isLoading }] = useAddContactMutation();
+    const { data: contacts } = useFetchContactsQuery();
 
     const handleSubmit = (values, { resetForm }) => {
         contacts.find(
             contact => contact.name.toLowerCase() === values.name.toLowerCase()
         )
             ? alert(`${values.name} is already in contacts!`)
-            : addContact(values) && notify() && resetForm();
+            : addContact(values) && notifyAdd() && resetForm();
     };
 
     const validationSchema = Yup.object().shape({
@@ -43,7 +45,7 @@ const FormPhonebook = () => {
 
     return (
         <>
-            <ToastContainer />
+            <ToastContainer autoClose={1000} position="top-center" />
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
@@ -85,6 +87,7 @@ const FormPhonebook = () => {
                         disabled={isLoading}
                         type="submit"
                     >
+                        {isLoading && <RotatingLines height="12" width="12" />}
                         Add contact
                     </button>
                 </Form>
