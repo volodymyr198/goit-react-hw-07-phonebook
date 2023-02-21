@@ -8,20 +8,36 @@ import {
     useAddContactMutation,
     useFetchContactsQuery,
 } from 'redux/contact.slice';
+import { useEffect } from 'react';
 import css from './FormPhonebook.module.css';
 
 const FormPhonebook = () => {
     const notifyAdd = () => toast.success('Contact added!');
+    const notifyError = () =>
+        toast.error('Sorry, something went wrong, please try again later!');
 
-    const [addContact, { isLoading }] = useAddContactMutation();
+    const [addContact, { isLoading, isSuccess, isError }] =
+        useAddContactMutation();
     const { data: contacts } = useFetchContactsQuery();
+
+    useEffect(() => {
+        if (isSuccess) {
+            notifyAdd();
+        }
+    }, [isSuccess]);
+
+    useEffect(() => {
+        if (isError) {
+            notifyError();
+        }
+    }, [isError]);
 
     const handleSubmit = (values, { resetForm }) => {
         contacts.find(
             contact => contact.name.toLowerCase() === values.name.toLowerCase()
         )
             ? alert(`${values.name} is already in contacts!`)
-            : addContact(values) && notifyAdd() && resetForm();
+            : addContact(values) && resetForm();
     };
 
     const validationSchema = Yup.object().shape({

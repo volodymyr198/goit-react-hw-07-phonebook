@@ -10,26 +10,28 @@ import { getFilter } from 'redux/selectors';
 const ContactList = () => {
     const filter = useSelector(getFilter);
 
-    const { data: contacts, isFetching, error } = useFetchContactsQuery();
+    const { data: contacts, isLoading, error } = useFetchContactsQuery();
     return (
-        <ul className={css.contactList}>
-            {isFetching && <p>...Loading</p>}
+        <>
+            {isLoading && <p>...Loading</p>}
             {error && (
                 <p>Sorry, something went wrong, please try again later!</p>
             )}
-            {contacts &&
-                !isFetching &&
-                getFilteredContacts(contacts, filter).map(
-                    ({ id, name, phone }) => (
-                        <ContactItem
-                            key={id}
-                            name={name}
-                            number={phone}
-                            id={id}
-                        />
-                    )
-                )}
-        </ul>
+            {contacts && contacts.length === 0 && <p>There is no contact!</p>}
+            <ul className={css.contactList}>
+                {contacts &&
+                    getFilteredContacts(contacts, filter).map(
+                        ({ id, name, phone }) => (
+                            <ContactItem
+                                key={id}
+                                name={name}
+                                number={phone}
+                                id={id}
+                            />
+                        )
+                    )}
+            </ul>
+        </>
     );
 };
 

@@ -11,7 +11,7 @@ const Filter = () => {
     const valueFilter = payload => {
         dispatch(setFilter(payload));
     };
-    console.log(filter);
+
     const changeFilter = e => {
         valueFilter(e.target.value);
     };
